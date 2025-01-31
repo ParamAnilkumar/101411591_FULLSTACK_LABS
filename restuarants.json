@@ -1,0 +1,33 @@
+[
+    {
+      "restaurant_id": "1001",
+      "name": "Sushi Haven",
+      "cuisines": "Japanese",
+      "city": "Toronto"
+    },
+    {
+      "restaurant_id": "1002",
+      "name": "Pasta Delight",
+      "cuisines": "Italian",
+      "city": "New York"
+    },
+    {
+      "restaurant_id": "1003",
+      "name": "Sweet Treats",
+      "cuisines": "Bakery",
+      "city": "Los Angeles"
+    },
+    {
+      "restaurant_id": "1004",
+      "name": "Brooklyn Bites",
+      "cuisines": "Delicatessen",
+      "city": "Brooklyn"
+    },
+    {
+      "restaurant_id": "1005",
+      "name": "Deli Fresh",
+      "cuisines": "Delicatessen",
+      "city": "San Francisco"
+    }
+  ]
+  
