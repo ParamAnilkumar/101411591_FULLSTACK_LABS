@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            
+        }
+
+        #chat-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #message-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        #send-btn {
+            padding: 12px;
+            background-color: #2575fc;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        #send-btn:hover {
+            background-color: #6a11cb;
+        }
+
+        #typing-indicator {
+            font-style: italic;
+            color: #888;
+            text-align: center;
+        }
+
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Welcome to the Chat Room</h2>
+    
+    <div id="chat-container">
+        <div id="messages"></div>
+        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+        <button id="send-btn">Send</button>
+    </div>
+
+    <p id="typing-indicator"></p>
+
+    <script>
+        const socket = io();
+        const username = localStorage.getItem('username');
+        const room = 'Global';
+
+        if (!username) {
+            window.location.href = "/login.html";
+        }
+
+        socket.emit('joinRoom', { username, room });
+
+        $('#send-btn').click(() => {
+            const message = $('#message-input').val();
+            if (message.trim() !== '') {
+                socket.emit('chatMessage', { from_user: username, room, message });
+                $('#message-input').val('');
+            }
+        });
+
+        socket.on('message', data => {
+            $('#messages').append(`<p><strong>${data.from_user}:</strong> ${data.message}</p>`);
+        });
+
+        $('#message-input').on('input', () => {
+            socket.emit('typing', { username, room });
+        });
+
+        socket.on('typing', user => {
+            $('#typing-indicator').text(`${user} is typing...`);
+            setTimeout(() => $('#typing-indicator').text(''), 3000);
+        });
+    </script>
+</body>
+</html>
